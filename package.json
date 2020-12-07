@@ -1,0 +1,24 @@
+{
+  "name": "orcli",
+  "version": "1.0.0",
+  "main": "index.js",
+  "bin": {
+    "orcli": "bin/orcli.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "colors": "^1.4.0",
+    "commander": "^6.2.0",
+    "inquirer": "^7.3.3",
+    "lodash": "^4.17.20",
+    "mathjs": "^8.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1"
+  },
+  "scripts": {
+    "test": "mocha tests/**/*.spec.js"
+  }
+}
