@@ -58,11 +58,12 @@ const init = {
                   `Please enter ${self.state} values for a row.`.red
                 );
               } else if (row.some((a) => a < 0 || a > 1)) {
+                throw new Error(`Each element should be between 0 to 1`.red);
+              } else if (sum(math.multiply(row, 10)) > 10) {
+                console.log({ row, sum: sum(math.multiply(row, 10)) });
                 throw new Error(
-                  `Each element should be an integer between 0 to 1`.red
+                  `Sum of each row should be equal to 1 or less`.red
                 );
-              } else if (sum(math.multiply(row, 10)) !== 10) {
-                throw new Error(`Sum of each row should be equal to 1`.red);
               }
 
               return true;

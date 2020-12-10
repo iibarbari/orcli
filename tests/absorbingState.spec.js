@@ -22,10 +22,10 @@ describe('Test absorbing state', () => {
           [0.2, 1.4],
         ])
       );
-    } else if (result.name === '((I-N)^-1)*I ') {
+    } else if (result.name === '((I-N)^-1)*I') {
       expect(result.value).to.deep.equal(math.matrix([2.8, 1.6]));
       result.value = math.matrix();
-    } else if (result.name === '((I-N)^-1)*A ') {
+    } else if (result.name === '((I-N)^-1)*A') {
       expect(result.value).to.deep.equal(math.matrix([[1], [1]]));
     }
   });

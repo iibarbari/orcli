@@ -20,7 +20,6 @@ function meanRecurrenceTime(matrix) {
     );
 
     // log
-
     times.push({
       j: index,
       time: time._data,

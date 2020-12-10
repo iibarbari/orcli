@@ -8,6 +8,7 @@ function absorbingState(matrix) {
   const N = math.matrix();
   const A = math.matrix();
 
+  /* FIXME: O-> 0 matrix I-> identity */
   matrix.forEach((row, rowIndex) => {
     if (rowIndex !== size - 1) {
       row.forEach((el, elIndex) => {
