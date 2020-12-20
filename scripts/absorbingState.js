@@ -1,54 +1,84 @@
 const chalk = require('chalk');
-const { isArray } = require('lodash');
+const {
+  sortedUniq,
+  uniqBy,
+  isEqual,
+  pullAt,
+  range,
+  isArray,
+} = require('lodash');
 const math = require('mathjs');
 const log = console.log;
 
 function absorbingState(matrix) {
   const size = math.matrix(matrix).size()[0];
-  const N = math.matrix();
-  const A = math.matrix();
+  let A = [];
+  const N = [];
+  const absorbingStates = [];
 
-  /* FIXME: O-> 0 matrix I-> identity */
-  matrix.forEach((row, rowIndex) => {
-    if (rowIndex !== size - 1) {
-      row.forEach((el, elIndex) => {
-        if (elIndex !== size - 1) {
-          N.subset(math.index(rowIndex, elIndex), el);
-        } else {
-          A.subset(math.index(rowIndex, 0), el);
-        }
-      });
+  matrix.forEach((row, i) => {
+    const parseRow = sortedUniq(uniqBy(row));
+
+    if (isEqual(parseRow, [0, 1])) {
+      absorbingStates.push(i);
     }
   });
 
-  const mainCalculation = math
-    .inv(math.subtract(math.identity(size - 1), N))
-    .map((n) => math.round(n, 2));
+  /* calculate A */
+  math.transpose(matrix).forEach((column, i) => {
+    const notAbsorbingStates = range(0, size).filter(
+      (i) => !absorbingStates.includes(i)
+    );
+
+    if (!notAbsorbingStates.includes(i)) {
+      A.push(pullAt(column, notAbsorbingStates));
+    }
+  });
+
+  // A
+  A = math.transpose(A);
+
+  /*  calculate N */
+  matrix.forEach((row, i) => {
+    const notAbsorbingStates = range(0, size).filter(
+      (i) => !absorbingStates.includes(i)
+    );
+
+    if (notAbsorbingStates.includes(i)) {
+      N.push(pullAt(row, notAbsorbingStates));
+    }
+  });
+
+  const iMinusN = math.subtract(math.identity(math.size(N)[0]), N);
+
+  const mainCalculation = math.inv(iMinusN).map((n) => math.round(n, 4));
 
   const transient = math
-    .multiply(mainCalculation, math.ones(size - 1))
-    .map((n) => math.round(n, 2));
+    .multiply(mainCalculation, math.ones(math.size(N)[0], 1))
+    .map((n) => math.round(n, 4));
 
   const absorbing = math
     .multiply(mainCalculation, A)
-    .map((n) => math.round(n, 2));
+    .map((n) => math.round(n, 4));
 
   const result = [
+    { name: 'A', value: A },
+    { name: 'N', value: N },
     { name: '(I-N)^-1', value: mainCalculation._data },
     { name: '((I-N)^-1)*I', value: transient._data },
     { name: '((I-N)^-1)*A', value: absorbing._data },
   ];
 
-  log(chalk.bold('\nAbsorbing state matrices:\n'));
+  log(chalk.blue.bold('\nAbsorbing state matrices:'));
 
   result.forEach(({ name, value }) => {
-    log(chalk.bold(`\n${name}\n`));
+    log(chalk.blue.bold(`\n${name}\n`));
 
     value.forEach((r) => {
       if (isArray(r)) {
-        log(chalk.bgBlack.whiteBright.bold(r.join('\t')));
+        log(chalk.bold(r.join('\t')));
       } else {
-        log(chalk.bgBlack.whiteBright.bold(r));
+        log(chalk.bold(r));
       }
     });
   });
