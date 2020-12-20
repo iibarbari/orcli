@@ -1,4 +1,4 @@
-const { simplify, parse, ...math } = require('mathjs');
+const { simplify, parse, transpose, ...math } = require('mathjs');
 const chalk = require('chalk');
 const log = console.log;
 const _ = require('lodash');
@@ -19,7 +19,7 @@ function steadyState(matrix) {
     steadyStates.push(
       math
         .pow(matrix, transition)
-        .map((e) => math.round(e, 2))
+        .map((e) => math.round(e, 5))
         .flat()
     );
 
@@ -39,7 +39,7 @@ function steadyState(matrix) {
   }
 
   const parsedArraySize = math.sqrt(steadyStates[0].length);
-  const parsedArray = [];
+  let parsedArray = [];
 
   for (let index = 0; index < parsedArraySize; index += 1) {
     parsedArray.push(
@@ -50,9 +50,11 @@ function steadyState(matrix) {
     );
   }
 
+  parsedArray = transpose(parsedArray[0]);
+
   log(chalk.bold('\nSteady state matrix:\n'));
 
-  parsedArray.forEach((r) => log(chalk.bgBlack.whiteBright.bold(r.join('\t'))));
+  parsedArray.forEach((r) => log(chalk.bold(r)));
 
   return {
     index: transition - 1,

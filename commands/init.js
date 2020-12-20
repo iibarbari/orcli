@@ -103,7 +103,7 @@ const init = {
             'Calculate transition matrix',
             'Calculate absorbing states',
             'Calculate steady state',
-            'Calculate mean recurrence',
+            'Calculate recurrence times',
           ],
         },
       ]);
